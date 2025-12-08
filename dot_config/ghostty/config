@@ -49,3 +49,6 @@
 # resize-overlay-duration = 4s 200ms
 theme = Catppuccin Frappe
 font-family = FiraCode Nerd Font Mono
+desktop-notifications = false
+shell-integration = detect
+
