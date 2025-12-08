@@ -1,0 +1,129 @@
+# ~/.zshrc - Streamlined Configuration for Python, Go, Rust
+# Last updated: 2025-12-8
+
+export GITHUB_USERNAME="jlargs64"
+export EDITOR="nvim"
+# ============================================================================
+# PATH CONFIGURATION
+# ============================================================================
+
+# Detect what OS this is running on 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export IS_MAC=true
+  export IS_LINUX=false
+else 
+  export IS_MAC=false
+  export IS_LINUX=true
+fi
+
+
+# Add local binaries to PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Go binaries
+export PATH="$HOME/go/bin:$PATH"
+
+# Python 3.13 user binaries
+if $IS_MAC; then
+  export PATH="$HOME/Library/Python/3.13/bin:$PATH"
+fi
+# ============================================================================
+# SECRETS (Credentials stored separately)
+# ============================================================================
+
+# Source secrets file (Apple API keys, etc.)
+[ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+
+# ============================================================================
+# COMPLETION SYSTEM
+# ============================================================================
+
+# Docker CLI completions
+if $IS_MAC; then
+  fpath=(/Users/justinlargo/.docker/completions $fpath)
+  # Initialize completion system
+  autoload -Uz compinit
+  compinit
+fi
+
+# ============================================================================
+# OH-MY-ZSH CONFIGURATION
+# ============================================================================
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="agnoster"
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
+
+# ============================================================================
+# GOOGLE CLOUD SDK
+# ============================================================================
+
+if $IS_MAC; then
+  # Google Cloud SDK PATH and completions
+  if [ -f '/Users/justinlargo/Tools/google-cloud-sdk/path.zsh.inc' ]; then
+      . '/Users/justinlargo/Tools/google-cloud-sdk/path.zsh.inc'
+  fi
+
+  if [ -f '/Users/justinlargo/Tools/google-cloud-sdk/completion.zsh.inc' ]; then
+      . '/Users/justinlargo/Tools/google-cloud-sdk/completion.zsh.inc'
+  fi
+fi
+
+# ============================================================================
+# PYTHON (UV) CONFIGURATION
+# ============================================================================
+
+# UV local binaries
+. "$HOME/.local/bin/env"
+
+# UV shell completions
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
+
+# ============================================================================
+# SHELL ENHANCEMENTS
+# ============================================================================
+
+# Modern replacements for standard tools
+alias ls="eza --icons=always"
+alias cd="z"
+
+# Development tools
+alias k8="kubectl"
+alias lzd='lazydocker'
+alias lg='lazygit'
+
+# Zoxide (smart cd)
+eval "$(zoxide init zsh)"
+
+# FZF (fuzzy finder)
+source <(fzf --zsh)
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+# ============================================================================
+# HISTORY CONFIGURATION
+# ============================================================================
+
+HISTFILE=$HOME/.zhistory
+SAVEHIST=1000
+HISTSIZE=999
+setopt share_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_verify
+
+# ============================================================================
+# ZSH PLUGINS
+# ============================================================================
+
+if $IS_MAC; then
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+#eval "$(zellij setup --generate-auto-start bash)"
+eval "$(zellij setup --generate-completion bash)"
+

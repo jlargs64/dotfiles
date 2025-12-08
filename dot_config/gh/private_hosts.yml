@@ -1,0 +1,5 @@
+github.com:
+    git_protocol: ssh
+    users:
+        jlargs64:
+    user: jlargs64
