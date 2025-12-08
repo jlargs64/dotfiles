@@ -1,0 +1,34 @@
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "fedora") -}}
+#!/bin/bash
+
+set -e
+
+echo "Installing Fedora packages..."
+
+# Install packages available in Fedora repos
+echo "Installing dnf packages..."
+sudo dnf install -y \
+    zellij \
+    eza \
+    starship \
+    fd-find \
+    ripgrep \
+    fzf \
+    bat \
+    git-delta \
+    neovim
+
+# Install uv (not in Fedora repos yet)
+if ! command -v uv &> /dev/null; then
+    echo "Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
+# Install mise (not in Fedora repos yet)
+if ! command -v mise &> /dev/null; then
+    echo "Installing mise..."
+    curl https://mise.run | sh
+fi
+
+echo "Fedora packages installed successfully!"
+{{- end -}}

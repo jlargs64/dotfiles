@@ -28,6 +28,13 @@ if $IS_MAC; then
   export PATH="$HOME/Library/Python/3.13/bin:$PATH"
 fi
 # ============================================================================
+# MISE (Tool Version Manager)
+# ============================================================================
+
+# Activate mise for managing Python, Go, Rust, Java, Node versions
+eval "$(mise activate zsh)"
+
+# ============================================================================
 # SECRETS (Credentials stored separately)
 # ============================================================================
 

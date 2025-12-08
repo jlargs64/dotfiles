@@ -55,3 +55,4 @@ font-family = FiraCode Nerd Font Mono
 # Function
 desktop-notifications = false
 shell-integration = detect
+shell-integration-features = cursor,sudo,title
