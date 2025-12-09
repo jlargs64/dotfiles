@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
 set -e
@@ -33,3 +34,4 @@ echo "Cleanup..."
 brew cleanup
 
 echo "macOS packages installed successfully!"
+{{- end -}}

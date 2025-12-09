@@ -81,9 +81,6 @@ fi
 # PYTHON (UV) CONFIGURATION
 # ============================================================================
 
-# UV local binaries
-. "$HOME/.local/bin/env"
-
 # UV shell completions
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"

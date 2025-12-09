@@ -1,0 +1,10 @@
+[user]
+	email = justinlargo7@gmail.com
+	name = Justin Largo
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM+NU7BT4/ryZMM9Lccw77TazUYPqeg9t2qmM0sA2M1q
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /opt/1Password/op-ssh-sign
+[commit]
+	gpgsign = true
