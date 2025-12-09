@@ -8,3 +8,5 @@
 	program = /opt/1Password/op-ssh-sign
 [commit]
 	gpgsign = true
+[url "git@github.com:jlargs64/"]
+	insteadOf = https://github.com/jlargs64/
