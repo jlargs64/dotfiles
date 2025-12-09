@@ -1,11 +1,11 @@
 [user]
 	email = justinlargo7@gmail.com
 	name = Justin Largo
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM+NU7BT4/ryZMM9Lccw77TazUYPqeg9t2qmM0sA2M1q
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNSbhWSOaOVtrwjxYIsdvkpMr9VPNCrwwSV8HTJe3as
 [gpg]
 	format = ssh
 [gpg "ssh"]
-	program = /opt/1Password/op-ssh-sign
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 [commit]
 	gpgsign = true
 [url "git@github.com:jlargs64/"]
