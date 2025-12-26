@@ -55,4 +55,6 @@ font-family = FiraCode Nerd Font Mono
 # Function
 desktop-notifications = false
 shell-integration = detect
-shell-integration-features = cursor,sudo,title
+#shell-integration-features = cursor,sudo,title
+shell-integration-features = no-cursor,no-sudo,no-title
+background-opacity = 0.8
