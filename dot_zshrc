@@ -42,10 +42,19 @@ eval "$(mise activate zsh)"
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
 
 # ============================================================================
+# OH-MY-ZSH CONFIGURATION
+# ============================================================================
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="agnoster"
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
+
+# ============================================================================
 # COMPLETION SYSTEM
 # ============================================================================
 
-# Initialize completion system
+# Initialize completion system (must be after oh-my-zsh)
 autoload -Uz compinit
 compinit
 
@@ -65,15 +74,6 @@ zstyle ':completion:*:warnings' format 'No matches for: %d'
 if $IS_MAC; then
   fpath=(/Users/justinlargo/.docker/completions $fpath)
 fi
-
-# ============================================================================
-# OH-MY-ZSH CONFIGURATION
-# ============================================================================
-
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="agnoster"
-plugins=(git)
-source $ZSH/oh-my-zsh.sh
 
 # ============================================================================
 # GOOGLE CLOUD SDK
@@ -136,11 +136,25 @@ setopt hist_verify
 # ZSH PLUGINS
 # ============================================================================
 
+# zsh-autosuggestions
 if $IS_MAC; then
-  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif $IS_LINUX; then
+  [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-#eval "$(zellij setup --generate-auto-start bash)"
-eval "$(zellij setup --generate-completion bash)"
+# zsh-syntax-highlighting (must be loaded last)
+if $IS_MAC; then
+  [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif $IS_LINUX; then
+  [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Zellij completions
+#eval "$(zellij setup --generate-auto-start zsh)"
+#eval "$(zellij setup --generate-completion zsh)"
 
