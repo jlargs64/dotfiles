@@ -45,12 +45,25 @@ eval "$(mise activate zsh)"
 # COMPLETION SYSTEM
 # ============================================================================
 
+# Initialize completion system
+autoload -Uz compinit
+compinit
+
+# Completion styling
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # Case insensitive completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" # Colored completion
+zstyle ':completion:*' special-dirs true # Complete . and ..
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+
 # Docker CLI completions
 if $IS_MAC; then
   fpath=(/Users/justinlargo/.docker/completions $fpath)
-  # Initialize completion system
-  autoload -Uz compinit
-  compinit
 fi
 
 # ============================================================================
