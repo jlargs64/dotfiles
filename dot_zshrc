@@ -117,3 +117,7 @@ alias k8="kubectl"
 alias lzd='lazydocker'
 alias lg='lazygit'
 alias vim='nvim'
+
+# Shell integrations
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
