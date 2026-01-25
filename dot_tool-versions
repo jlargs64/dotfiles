@@ -1,5 +1,5 @@
-python 3.12
-go latest
-rust latest
-java openjdk-21
-node lts
+python 3.14
+golang latest
+rust   latest
+java   openjdk-21
+nodejs lts
