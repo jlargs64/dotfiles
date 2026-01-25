@@ -10,6 +10,7 @@
 {{- else if eq .chezmoi.os "linux" }}
 	program = /opt/1Password/op-ssh-sign
 {{- end }}
+	allowedSignersFile = ~/.ssh/allowed_signers
 [commit]
 	gpgsign = true
 [url "git@github.com:jlargs64/"]
