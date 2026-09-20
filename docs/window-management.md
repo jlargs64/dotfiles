@@ -114,6 +114,31 @@ and re-add it.
 off by default for Spaces past the first few. Enable it in
 System Settings > Keyboard > Keyboard Shortcuts > Mission Control.
 
+## Moving windows between Spaces
+
+yabai cannot do this without the scripting addition. Both commands *look* like
+they work and do not:
+
+```sh
+yabai -m space --focus 1          # returns 0, focus does not change
+yabai -m window <id> --space 1    # "could not locate the window to act on!"
+```
+
+That is tested behaviour on this machine, not a guess. So use the native macOS
+mechanisms — all of these work today:
+
+| How | What to do |
+|---|---|
+| **Drag + `ctrl`+arrow** | Start dragging the window's title bar, then press `ctrl+←` / `ctrl+→` while still holding. The window travels with you. Fastest method. |
+| **Drag to screen edge** | Drag the window to the left or right edge and hold. `workspaces-edge-delay` is set to `0.05`, so it flips almost instantly. |
+| **Mission Control** | Drag the window to the top of the screen, then drop it on a desktop thumbnail. |
+| **Pin an app** | Right-click its Dock icon > Options > Assign To > Desktop N. Per-app, not per-window. |
+
+Switching Spaces without moving anything is `ctrl+1`..`ctrl+4`, or
+`ctrl+←`/`ctrl+→`. All of those shortcuts are already enabled here; if they ever
+stop working, re-check System Settings > Keyboard > Keyboard Shortcuts >
+Mission Control.
+
 ## Layout configuration
 
 `~/.config/yabai/yabairc`, in full:

@@ -25,7 +25,7 @@ See [docs/window-management.md](docs/window-management.md).
 
 | Area | Config | Docs |
 |---|---|---|
-| Terminal | Ghostty + Zellij | |
+| Terminal | Ghostty + Zellij | [docs/zellij.md](docs/zellij.md) |
 | Editor | Neovim (LazyVim) | |
 | Shell | zsh + starship + mise | |
 | Theming | Ghostty, Zellij, Neovim, SketchyBar, borders, wallpaper | [docs/theme-system.md](docs/theme-system.md) |

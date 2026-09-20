@@ -197,7 +197,7 @@ keybinds clear-defaults=true {
     shared_except "normal" "locked" "entersearch" "renametab" "renamepane" {
         bind "esc" { SwitchToMode "normal"; }
     }
-    shared_among "pane" "tmux" {
+    shared_among "pane" {
         bind "x" { CloseFocus; SwitchToMode "normal"; }
     }
     shared_among "scroll" "search" {
@@ -232,29 +232,94 @@ keybinds clear-defaults=true {
     renamepane {
         bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
     }
-    shared_among "session" "tmux" {
+    shared_among "session" {
         bind "d" { Detach; }
     }
+    // =====================================================================
+    // tmux mode -- prefix is Ctrl b, exactly like tmux.
+    //
+    // These follow REAL tmux defaults, not zellij conventions, so the muscle
+    // memory transfers to an actual tmux session. zellij's own normal-mode
+    // shortcuts (Ctrl p/t/n/s/o/h) are untouched -- use whichever you like.
+    //
+    // tmux calls them "windows"; zellij calls them "tabs". Same thing.
+    //
+    // Not bound, because zellij has no equivalent:
+    //   ?  list keys      :  command prompt    $  rename session
+    //   t  clock          q  pane numbers      ]  paste buffer
+    // =====================================================================
     tmux {
-        bind "left" { MoveFocus "left"; SwitchToMode "normal"; }
-        bind "down" { MoveFocus "down"; SwitchToMode "normal"; }
-        bind "up" { MoveFocus "up"; SwitchToMode "normal"; }
+        // ----- prefix ----------------------------------------------------
+        bind "Ctrl b" { Write 2; SwitchToMode "normal"; }   // send a literal C-b
+
+        // ----- panes: split ----------------------------------------------
+        bind "\"" { NewPane "down"; SwitchToMode "normal"; }   // C-b "  split vertically
+        bind "%" { NewPane "right"; SwitchToMode "normal"; }   // C-b %  split horizontally
+
+        // ----- panes: focus ----------------------------------------------
+        // tmux uses the ARROW keys for directional pane focus. hjkl are not
+        // tmux defaults, so they are deliberately not bound here.
+        bind "left"  { MoveFocus "left";  SwitchToMode "normal"; }
+        bind "down"  { MoveFocus "down";  SwitchToMode "normal"; }
+        bind "up"    { MoveFocus "up";    SwitchToMode "normal"; }
         bind "right" { MoveFocus "right"; SwitchToMode "normal"; }
-        bind "space" { NextSwapLayout; }
-        bind "\"" { NewPane "down"; SwitchToMode "normal"; }
-        bind "%" { NewPane "right"; SwitchToMode "normal"; }
-        bind "," { SwitchToMode "renametab"; }
-        bind "[" { SwitchToMode "scroll"; }
-        bind "Ctrl b" { Write 2; SwitchToMode "normal"; }
-        bind "c" { NewTab; SwitchToMode "normal"; }
-        bind "h" { MoveFocus "left"; SwitchToMode "normal"; }
-        bind "j" { MoveFocus "down"; SwitchToMode "normal"; }
-        bind "k" { MoveFocus "up"; SwitchToMode "normal"; }
-        bind "l" { MoveFocus "right"; SwitchToMode "normal"; }
-        bind "n" { GoToNextTab; SwitchToMode "normal"; }
-        bind "o" { FocusNextPane; }
-        bind "p" { GoToPreviousTab; SwitchToMode "normal"; }
-        bind "z" { ToggleFocusFullscreen; SwitchToMode "normal"; }
+        bind "o" { FocusNextPane; SwitchToMode "normal"; }      // C-b o  next pane
+        bind ";" { SwitchFocus; SwitchToMode "normal"; }        // C-b ;  last pane
+
+        // ----- panes: manipulate -----------------------------------------
+        bind "x" { CloseFocus; SwitchToMode "normal"; }         // C-b x  kill pane
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "normal"; } // C-b z  zoom
+        bind "{" { MovePaneBackwards; SwitchToMode "normal"; }  // C-b {  swap pane up
+        bind "}" { MovePane; SwitchToMode "normal"; }           // C-b }  swap pane down
+        bind "!" { BreakPane; SwitchToMode "normal"; }          // C-b !  pane -> new window
+        bind "space" { NextSwapLayout; }                        // C-b space  next layout
+
+        // ----- panes: resize (repeatable -- stays in tmux mode) -----------
+        bind "Ctrl left"  { Resize "Increase left"; }
+        bind "Ctrl down"  { Resize "Increase down"; }
+        bind "Ctrl up"    { Resize "Increase up"; }
+        bind "Ctrl right" { Resize "Increase right"; }
+
+        // ----- windows (zellij tabs) --------------------------------------
+        bind "c" { NewTab; SwitchToMode "normal"; }             // C-b c  new window
+        bind "n" { GoToNextTab; SwitchToMode "normal"; }        // C-b n  next window
+        bind "p" { GoToPreviousTab; SwitchToMode "normal"; }    // C-b p  previous window
+        bind "l" { ToggleTab; SwitchToMode "normal"; }          // C-b l  LAST window
+        bind "&" { CloseTab; SwitchToMode "normal"; }           // C-b &  kill window
+        bind "," { SwitchToMode "renametab"; }                  // C-b ,  rename window
+        bind "." { SwitchToMode "renametab"; TabNameInput 0; }  // C-b .  (tmux: renumber)
+        bind "0" { GoToTab 10; SwitchToMode "normal"; }
+        bind "1" { GoToTab 1; SwitchToMode "normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "normal"; }
+
+        // ----- choose window / session ------------------------------------
+        // tmux opens an interactive chooser for all three; zellij's
+        // session-manager plugin covers sessions, tabs and panes at once.
+        bind "w" {                                              // C-b w  choose window
+            LaunchOrFocusPlugin "session-manager" { floating true; move_to_focused_tab true; }
+            SwitchToMode "normal"
+        }
+        bind "s" {                                              // C-b s  choose session
+            LaunchOrFocusPlugin "session-manager" { floating true; move_to_focused_tab true; }
+            SwitchToMode "normal"
+        }
+        bind "f" {                                              // C-b f  find window
+            LaunchOrFocusPlugin "session-manager" { floating true; move_to_focused_tab true; }
+            SwitchToMode "normal"
+        }
+
+        // ----- sessions ----------------------------------------------------
+        bind "d" { Detach; }                                    // C-b d  detach
+
+        // ----- copy mode ---------------------------------------------------
+        bind "[" { SwitchToMode "scroll"; }                     // C-b [  copy mode
     }
 }
 
