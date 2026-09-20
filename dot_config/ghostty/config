@@ -48,8 +48,15 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-# Zellij: every new window/tab attaches to (or creates) session "main"
-command = zsh -lc "zellij attach -c main"
+# Zellij: every new window/tab gets its OWN session, so windows never mirror
+# each other. Attaching them all to one shared session (the previous
+# `zellij attach -c main`) meant two windows showed the same panes.
+# $$ is the launching zsh's PID, which keeps names unique if two windows
+# open within the same second.
+#   zellij list-sessions        see them all
+#   zellij attach <name>        resume one after closing its window
+#   zellij delete-all-sessions  clean up exited ones
+command = zsh -lc "zellij -s ghostty-$(date +%H%M%S)-$$"
 
 # Vibes
 # [theme-system] was: theme = Catppuccin Frappe

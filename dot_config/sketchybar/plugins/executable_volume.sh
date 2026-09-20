@@ -11,10 +11,10 @@ else
   VOLUME=$(osascript -e "output volume of (get volume settings)" 2>/dev/null)
 fi
 
-MUTED=$(osascript -e "output muted of (get volume settings)" 2>/dev/null)
+IS_MUTED=$(osascript -e "output muted of (get volume settings)" 2>/dev/null)
 
-if [ "$MUTED" = "true" ] || [ "$VOLUME" -eq 0 ]; then
-  ICON=""
+if [ "$IS_MUTED" = "true" ] || [ "$VOLUME" -eq 0 ]; then
+  ICON="󰝟"
   COLOR="$RED"
 else
   COLOR="$ACCENT_VOLUME"

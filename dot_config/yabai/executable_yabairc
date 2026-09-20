@@ -31,7 +31,7 @@ yabai -m config window_gap                  8
 # ----- focus behaviour ------------------------------------------------------
 yabai -m config mouse_follows_focus          off
 yabai -m config focus_follows_mouse          off
-yabai -m config window_topmost               off
+# window_topmost was removed in yabai v7.
 yabai -m config window_shadow                float
 
 # ----- mouse ----------------------------------------------------------------
@@ -41,8 +41,9 @@ yabai -m config mouse_action1                move
 yabai -m config mouse_action2                resize
 yabai -m config mouse_drop_action            swap
 
-# ----- borders are drawn by JankyBorders, not yabai -------------------------
-yabai -m config window_border                off
+# ----- borders ---------------------------------------------------------------
+# JankyBorders draws the focused-window border. yabai's own `window_border`
+# config was removed in yabai v7, so there is nothing to turn off here.
 
 # ----- keep SketchyBar's space indicators in sync ---------------------------
 # Without the scripting addition yabai cannot emit space_change itself, so we
@@ -61,5 +62,10 @@ yabai -m rule --add app="^Archive Utility$"        manage=off
 yabai -m rule --add app="^Finder$" title="^Copy$"  manage=off
 yabai -m rule --add app="^1Password$"              manage=off
 yabai -m rule --add app="^Raycast$"                manage=off
+
+# Steam's windows are not AXStandardWindow, so yabai cannot tile them at all.
+# Float it explicitly rather than letting it look like a yabai failure.
+yabai -m rule --add app="^Steam$"                  manage=off
+yabai -m rule --add app="^steam_osx$"              manage=off
 
 echo "yabai configuration loaded"
