@@ -70,7 +70,7 @@ fatal.
 |---|---|
 | SketchyBar | live |
 | JankyBorders | live |
-| Wallpaper | live |
+| Wallpaper | live, on every Space that already points at the fixed path (see below) |
 | Zellij | live — a running session repaints in place |
 | Neovim | live in every running instance, via `--remote-send` |
 | Ghostty | needs `cmd+shift+,`; `theme-set` sends it, but see below |
@@ -81,6 +81,28 @@ Ghostty is the one that can need a keypress. `theme-set` activates it and sends
 prompt and **blocks until you answer it**. If the keystroke does not land,
 `theme-set` prints `cmd+shift+, in Ghostty` and you press it yourself. Terminals
 are never killed.
+
+## The wallpaper and macOS Spaces
+
+macOS stores the wallpaper **per Space**, and AppleScript cannot reach a Space
+that is not active — System Events reports one "desktop" per *display*, not per
+Space. Pointing each theme at its own image file would therefore only ever
+repaint whichever Space you happened to be on.
+
+So every Space points at one fixed path instead:
+
+```
+~/.config/theme/wallpaper-current.jpg
+```
+
+`theme-set` copies the active theme's `wallpaper.jpg` over that file and
+restarts `WallpaperAgent`, which makes macOS re-read it. Every Space already
+pointing at that path repaints at once.
+
+**One-time setup per Space:** a Space that has never been pointed at the fixed
+path keeps its old wallpaper. Visit each Space once and run `theme-set` (or
+`theme-next`) while it is active. After that, every future switch covers them
+all.
 
 ## The themes
 

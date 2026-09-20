@@ -55,13 +55,28 @@ if command -v nvim >/dev/null 2>&1 && [ -n "${NVIM_COLORSCHEME:-}" ]; then
 fi
 
 # 6. wallpaper
+#
+# macOS stores the wallpaper PER SPACE, and AppleScript's "every desktop" only
+# reaches the Space that is active right now -- System Events reports one
+# "desktop" per DISPLAY, not per Space. Pointing each theme at its own file
+# would therefore only ever repaint the current Space.
+#
+# So every Space is pointed at one fixed path instead, and switching themes
+# rewrites that file's contents. Restarting WallpaperAgent makes macOS re-read
+# it, which repaints every Space that already points there.
+#
+# A Space that has never been pointed at the fixed path keeps its old
+# wallpaper until theme-set runs once while that Space is active.
 wp="$CURRENT/wallpaper.jpg"
 if [ ! -f "$wp" ]; then
   "$THEME_ROOT/bin/theme-wallpaper" "$THEMES_DIR/$name" >/dev/null 2>&1 || true
 fi
 if [ -f "$wp" ]; then
-  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(readlink -f "$wp" 2>/dev/null || echo "$wp")\"" >/dev/null 2>&1 \
+  fixed="$THEME_ROOT/wallpaper-current.jpg"
+  cp -f "$wp" "$fixed" 2>/dev/null || true
+  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$fixed\"" >/dev/null 2>&1 \
     || echo "theme-set: wallpaper needs System Events automation permission" >&2
+  killall WallpaperAgent >/dev/null 2>&1 || true
 fi
 
 # 7. Ghostty — ask it to reload its config

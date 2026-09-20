@@ -89,6 +89,10 @@ and re-add it.
 | Binding | Action |
 |---|---|
 | `alt - e` | balance the tree |
+| `alt - s` | toggle the space between **bsp** (tiled) and **stack** |
+| `alt - [` / `alt - ]` | focus previous / next window in the stack |
+| `shift + alt - s` | next new window **stacks** onto this one |
+| `shift + alt - e` / `shift + alt - d` | next new window splits **right** / **below** |
 | `alt - r` | rotate layout 90° |
 | `alt - t` | toggle float, centered on a 4×4 grid |
 | `alt - f` | zoom to fullscreen (within the tile tree) |

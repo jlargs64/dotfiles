@@ -18,6 +18,7 @@ docs
 # Generated from each theme's palette by run_onchange_generate-wallpapers.sh.
 # Deterministic, ~3 MB total, so they are built on apply instead of committed.
 .config/theme/themes/*/wallpaper.jpg
+.config/theme/wallpaper-current.jpg
 
 # Backups left behind by the theme installer and by zellij's own config rewrites.
 **/*.bak

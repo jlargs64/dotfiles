@@ -36,6 +36,18 @@ alt - f          : yabai -m window --toggle zoom-fullscreen
 shift + alt - f  : yabai -m window --toggle native-fullscreen
 alt - m          : yabai -m window --toggle split
 
+# ----- stacking ---------------------------------------------------------------
+# A "stack" puts several windows in one tile, like browser tabs -- only the
+# focused one is visible. All of this works without the scripting addition.
+alt - s          : yabai -m space --layout "$(test "$(yabai -m query --spaces --space | jq -r .type)" = bsp && echo stack || echo bsp)"
+alt - 0x21       : yabai -m window --focus stack.prev    # alt - [
+alt - 0x1E       : yabai -m window --focus stack.next    # alt - ]
+
+# Where the NEXT new window lands relative to the focused one.
+shift + alt - s  : yabai -m window --insert stack        # stack onto this window
+shift + alt - e  : yabai -m window --insert east         # split to the right
+shift + alt - d  : yabai -m window --insert south        # split below
+
 # ----- theme ----------------------------------------------------------------
 # Cycle Ghostty + Zellij + Neovim + SketchyBar + borders + wallpaper together.
 shift + alt - t : ~/.local/bin/theme-next
