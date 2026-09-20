@@ -38,8 +38,8 @@ MEM=$(vm_stat 2>/dev/null | awk '
   }')
 [ -z "$MEM" ] && MEM="?"
 
-CPU_ICON=""
-MEM_ICON=""
+CPU_ICON=""
+MEM_ICON=""
 
 sketchybar --set "$NAME" \
   icon="$CPU_ICON" \

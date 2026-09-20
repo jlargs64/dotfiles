@@ -99,10 +99,17 @@ So every Space points at one fixed path instead:
 restarts `WallpaperAgent`, which makes macOS re-read it. Every Space already
 pointing at that path repaints at once.
 
-**One-time setup per Space:** a Space that has never been pointed at the fixed
-path keeps its old wallpaper. Visit each Space once and run `theme-set` (or
-`theme-next`) while it is active. After that, every future switch covers them
-all.
+**One-time setup:** run `theme-wallpaper-enroll` once. It walks every Space
+using the native `ctrl+<number>` shortcut, points each at the fixed path, and
+returns you to where you started. Your screen visibly flicks through the Spaces
+while it runs.
+
+That shortcut must be enabled in System Settings > Keyboard > Keyboard
+Shortcuts > Mission Control, or the walk cannot move between Spaces.
+
+If a theme switch ever leaves a Space showing the old wallpaper, run
+`theme-wallpaper-enroll` again — that re-points every Space and forces a
+repaint.
 
 ## The themes
 
