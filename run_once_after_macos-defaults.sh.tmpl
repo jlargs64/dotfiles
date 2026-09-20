@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+#
+# macOS defaults that make the desktop feel responsive rather than floaty.
+# Everything here is a per-user `defaults` key -- no sudo, nothing system-wide,
+# and every one is reversible with `defaults delete`.
+#
+set -e
+
+echo "Applying macOS defaults..."
+
+# --- Spaces / Mission Control ----------------------------------------------
+# The slide animation when switching desktops. Default is 0.2s, which reads as
+# floaty when you swipe between Spaces constantly. 0.1 keeps the animation
+# (so you still see which direction you moved) at half the duration.
+#   revert:  defaults delete com.apple.dock expose-animation-duration
+defaults write com.apple.dock expose-animation-duration -float 0.1
+
+# How long a drag must hover at the screen edge before it flips to the next
+# Space. Default is ~0.75s.
+#   revert:  defaults delete com.apple.dock workspaces-edge-delay
+defaults write com.apple.dock workspaces-edge-delay -float 0.05
+
+# Do not reorder Spaces by recent use -- yabai and the SketchyBar Space
+# indicators both assume Space N stays Space N.
+defaults write com.apple.dock mru-spaces -bool false
+
+# --- Window behaviour -------------------------------------------------------
+# Instant window resize for AppKit windows.
+defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+killall Dock 2>/dev/null || true
+
+cat <<'NOTICE'
+macOS defaults applied.
+
+If switching Spaces still feels too floaty, the stronger option is Reduce
+Motion, which replaces the slide with a near-instant crossfade:
+
+  System Settings > Accessibility > Display > Reduce Motion
+
+That is left off by default here because it also flattens animations
+everywhere else in the system.
+NOTICE
+{{- end -}}

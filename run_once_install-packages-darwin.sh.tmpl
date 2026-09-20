@@ -28,10 +28,68 @@ brew install \
   bat \
   git-delta \
   neovim \
-  mise
+  mise \
+  jq \
+  imagemagick
+
+# ---------------------------------------------------------------------------
+# Desktop stack: tiling window manager, status bar, window borders, hotkeys.
+# See docs/window-management.md and docs/theme-system.md.
+#
+#   yabai      tiling WM, layered over native macOS Spaces
+#   skhd       hotkey daemon that drives yabai and the theme switcher
+#   sketchybar status bar
+#   borders    (JankyBorders) active-window border, themed
+#
+# jq and imagemagick above are not optional here: the SketchyBar space plugin
+# parses yabai's JSON with jq, and theme-wallpaper renders wallpapers with
+# ImageMagick.
+# ---------------------------------------------------------------------------
+echo "Installing desktop stack..."
+brew install \
+  koekeishiya/formulae/yabai \
+  koekeishiya/formulae/skhd \
+  FelixKratz/formulae/sketchybar \
+  FelixKratz/formulae/borders
+
+# Fonts. JetBrainsMono Nerd Font is what the theme system sets Ghostty to;
+# Hack Nerd Font is what SketchyBar's item fonts reference.
+echo "Installing fonts..."
+brew install --cask \
+  font-jetbrains-mono-nerd-font \
+  font-hack-nerd-font
+
+# sketchybar-app-font provides the per-app glyphs in the Space indicators.
+if [ ! -f "$HOME/Library/Fonts/sketchybar-app-font.ttf" ]; then
+  echo "Installing sketchybar-app-font..."
+  curl -fsSL -o "$HOME/Library/Fonts/sketchybar-app-font.ttf" \
+    https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf \
+    || echo "  (failed; bar will render app icons as blanks)"
+fi
 
 echo "Cleanup..."
 brew cleanup
 
-echo "macOS packages installed successfully!"
+cat <<'NOTICE'
+
+macOS packages installed successfully!
+
+MANUAL STEP REQUIRED -- yabai and skhd cannot start without it:
+
+  1. System Settings > Privacy & Security > Accessibility
+     Add and enable BOTH:
+       /opt/homebrew/bin/yabai
+       /opt/homebrew/bin/skhd
+
+  2. Then start the services:
+       yabai --start-service
+       skhd --start-service
+       brew services start borders
+       brew services start sketchybar
+
+The yabai scripting addition is deliberately NOT used -- it requires partially
+disabling SIP. Tiling works without it; switching Spaces stays native
+(ctrl + <number>). See docs/window-management.md.
+
+NOTICE
 {{- end -}}

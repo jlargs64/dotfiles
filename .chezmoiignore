@@ -1,0 +1,36 @@
+# ---------------------------------------------------------------------------
+# chezmoi ignore rules. Patterns are relative to the TARGET dir (~), not to
+# this source repo.
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Repo-only files. These document the repo; they are not configuration and must
+# never be written into the home directory.
+# ---------------------------------------------------------------------------
+README.md
+LICENSE
+docs
+
+# Runtime state, not configuration. `theme-set` repoints this symlink on every
+# switch, so chezmoi must never try to own it or it will fight the switcher.
+.config/theme/current
+
+# Generated from each theme's palette by run_onchange_generate-wallpapers.sh.
+# Deterministic, ~3 MB total, so they are built on apply instead of committed.
+.config/theme/themes/*/wallpaper.jpg
+
+# Backups left behind by the theme installer and by zellij's own config rewrites.
+**/*.bak
+**/*.bak.[0-9]
+
+# Compiled arm64 Mach-O helper with no source in this repo. Excluded rather
+# than committed as an opaque binary -- see docs/theme-system.md.
+.config/sketchybar/helpers/open_centered
+
+# macOS-only window-manager and bar tooling.
+{{- if ne .chezmoi.os "darwin" }}
+.config/sketchybar
+.config/borders
+.config/skhd
+.config/raycast
+{{- end }}
