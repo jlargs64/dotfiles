@@ -82,34 +82,76 @@ prompt and **blocks until you answer it**. If the keystroke does not land,
 `theme-set` prints `cmd+shift+, in Ghostty` and you press it yourself. Terminals
 are never killed.
 
-## The wallpaper and macOS Spaces
+## Wallpapers
 
-macOS stores the wallpaper **per Space**, and AppleScript cannot reach a Space
-that is not active — System Events reports one "desktop" per *display*, not per
-Space. Pointing each theme at its own image file would therefore only ever
-repaint whichever Space you happened to be on.
+Each theme has a `backgrounds/` directory of real images, pulled from upstream
+[Omarchy](https://github.com/basecamp/omarchy) by `theme-bg-fetch`. Omarchy
+ships them at 5120x2880 already.
 
-So every Space points at one fixed path instead:
+| Theme | Backgrounds | Default |
+|---|---|---|
+| retro-82 | 9 | `01-quattro.jpg` |
+| kanagawa-wave | 1 | `01-great-wave.jpg` |
+| catppuccin-mocha | 3 | `01-waves.jpg` |
+
+Two of those defaults come from a different upstream theme than you would
+expect, on purpose:
+
+- **retro-82 → quattro**, which is Omarchy's *tokyo-night* background. Omarchy
+  has its own `retro-82` theme, but its backgrounds are teal and orange, and
+  this retro-82 uses the magenta / cyan / amber palette from the spec. Quattro's
+  synthwave magenta and amber match it; Omarchy's own set does not. Its 8
+  images are still included, as entries 02–09.
+- **kanagawa-wave → The Great Wave**, Hokusai's print off Kanagawa. The theme
+  is named after it.
+
+### Choosing one
+
+```sh
+theme-bg              # list this theme's backgrounds, * marks the active one
+theme-bg 3            # pick by number
+theme-bg totoro       # pick by substring
+theme-bg next | prev  # cycle
+theme-bg-fetch        # re-download anything missing
+```
+
+`shift + alt - b` cycles the background within the current theme;
+`shift + alt - t` cycles the theme itself.
+
+The choice is remembered per theme in `themes/<name>/.bg`, so switching away
+and back keeps the image you picked.
+
+If a theme has no `backgrounds/` directory, `theme-set` falls back to
+`wallpaper.jpg` — a gradient generated from that theme's own palette by
+`theme-wallpaper` (retro-82's gets faint CRT scanlines). That is the fallback
+now, not the default.
+
+Backgrounds are ~19 MB and are **not** committed. `theme-bg-fetch` runs on
+`chezmoi apply` and skips whatever already exists.
+
+## Wallpapers and macOS Spaces
+
+macOS stores the wallpaper **per Space**, and AppleScript can only reach the
+Space that is active — System Events exposes one "desktop" per *display*, not
+per Space. yabai cannot switch Spaces without the scripting addition either.
+
+So every Space points at one fixed path:
 
 ```
 ~/.config/theme/wallpaper-current.jpg
 ```
 
-`theme-set` copies the active theme's `wallpaper.jpg` over that file and
-restarts `WallpaperAgent`, which makes macOS re-read it. Every Space already
-pointing at that path repaints at once.
+Applying a background copies the chosen image over that file and restarts
+`WallpaperAgent`.
 
 **One-time setup:** run `theme-wallpaper-enroll` once. It walks every Space
 using the native `ctrl+<number>` shortcut, points each at the fixed path, and
 returns you to where you started. Your screen visibly flicks through the Spaces
-while it runs.
+while it runs. That shortcut must be enabled in System Settings > Keyboard >
+Keyboard Shortcuts > Mission Control.
 
-That shortcut must be enabled in System Settings > Keyboard > Keyboard
-Shortcuts > Mission Control, or the walk cannot move between Spaces.
-
-If a theme switch ever leaves a Space showing the old wallpaper, run
-`theme-wallpaper-enroll` again — that re-points every Space and forces a
-repaint.
+If a switch ever leaves a Space showing the old image, run
+`theme-wallpaper-enroll` again.
 
 ## The themes
 

@@ -51,6 +51,8 @@ shift + alt - d  : yabai -m window --insert south        # split below
 # ----- theme ----------------------------------------------------------------
 # Cycle Ghostty + Zellij + Neovim + SketchyBar + borders + wallpaper together.
 shift + alt - t : ~/.local/bin/theme-next
+# Cycle the BACKGROUND within the current theme (retro-82 ships 9, catppuccin 3).
+shift + alt - b : ~/.local/bin/theme-bg next
 
 # ----- restart services -----------------------------------------------------
 shift + alt - r : yabai --restart-service && sketchybar --reload

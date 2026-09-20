@@ -111,6 +111,7 @@ and re-add it.
 | Binding | Action |
 |---|---|
 | `shift + alt - t` | cycle the desktop theme |
+| `shift + alt - b` | cycle the wallpaper within the current theme |
 | `shift + alt - r` | restart yabai and reload SketchyBar |
 | `ctrl - <number>` | switch Space (**native macOS**, see below) |
 

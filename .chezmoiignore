@@ -20,6 +20,13 @@ docs
 .config/theme/themes/*/wallpaper.jpg
 .config/theme/wallpaper-current.jpg
 
+# Real wallpapers, fetched from upstream Omarchy by theme-bg-fetch (~19 MB).
+# Downloaded on apply rather than committed, same reasoning as the gradients.
+.config/theme/themes/*/backgrounds
+
+# Per-theme remembered background choice. Runtime state.
+.config/theme/themes/*/.bg
+
 # Backups left behind by the theme installer and by zellij's own config rewrites.
 **/*.bak
 **/*.bak.[0-9]

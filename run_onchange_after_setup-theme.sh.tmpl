@@ -29,13 +29,16 @@ if [ ! -e "$THEME_ROOT/current" ]; then
   fi
 fi
 
-# 2. generate any missing wallpapers (theme-wallpaper is a no-op if present)
+# 2. generate the fallback gradient wallpapers (theme-wallpaper is a no-op if present)
 for d in "$THEME_ROOT"/themes/*/; do
   [ -f "$d/colors.sh" ] || continue
   "$THEME_ROOT/bin/theme-wallpaper" "$d" || echo "theme: wallpaper generation failed for $d" >&2
 done
 
-# 3. keep the Raycast dropdown in sync with the theme list
+# 3. fetch the real wallpapers from upstream Omarchy (skips what exists)
+[ -x "$THEME_ROOT/bin/theme-bg-fetch" ] && "$THEME_ROOT/bin/theme-bg-fetch" || true
+
+# 4. keep the Raycast dropdown in sync with the theme list
 [ -x "$THEME_ROOT/bin/theme-raycast-sync" ] && "$THEME_ROOT/bin/theme-raycast-sync" >/dev/null || true
 
 echo "theme: setup complete"
