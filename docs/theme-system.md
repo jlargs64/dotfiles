@@ -142,7 +142,9 @@ So every Space points at one fixed path:
 ```
 
 Applying a background copies the chosen image over that file and restarts
-`WallpaperAgent`.
+`WallpaperAgent`. macOS re-reads the file's contents, so **every enrolled Space
+repaints at once** — confirmed in use, not just in theory. Only the file changes;
+the path each Space points at never does.
 
 **One-time setup:** run `theme-wallpaper-enroll` once. It walks every Space
 using the native `ctrl+<number>` shortcut, points each at the fixed path, and
@@ -150,8 +152,9 @@ returns you to where you started. Your screen visibly flicks through the Spaces
 while it runs. That shortcut must be enabled in System Settings > Keyboard >
 Keyboard Shortcuts > Mission Control.
 
-If a switch ever leaves a Space showing the old image, run
-`theme-wallpaper-enroll` again.
+You only need this once. After enrolment, `theme-set` and `theme-bg` repaint
+all Spaces together. Run it again only if you add a Space, since a new one
+starts with whatever wallpaper macOS gives it.
 
 ## The themes
 
