@@ -48,14 +48,62 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
+# Zellij: every new window/tab gets its OWN session, so windows never mirror
+# each other. Attaching them all to one shared session (the previous
+# `zellij attach -c main`) meant two windows showed the same panes.
+# $$ is the launching zsh's PID, which keeps names unique if two windows
+# open within the same second.
+#   zellij list-sessions        see them all
+#   zellij attach <name>        resume one after closing its window
+#   zellij delete-all-sessions  clean up exited ones
+command = zsh -lc "zellij -s ghostty-$(date +%H%M%S)-$$"
+
 # Vibes
-theme = Catppuccin Frappe
-font-family = FiraCode Nerd Font Mono
+# [theme-system] was: theme = Catppuccin Frappe
+# font-family = FiraCode Nerd Font Mono
+# [theme-system] was: font-family = JetBrains Mono
 
 # Function
-desktop-notifications = false
-shell-integration = detect
+
+desktop-notifications = true
+# [theme-system] was: macos-titlebar-style = transparent
+shell-integration-features = sudo
 #shell-integration-features = cursor,sudo,title
 shell-integration-features = no-cursor,no-sudo,no-title
-background-opacity = 0.9
+background-opacity = 1.0
 
+mouse-scroll-multiplier = 0.5
+
+# Window
+window-decoration = true
+# [theme-system] was: window-padding-x = 8
+# [theme-system] was: window-padding-y = 8
+
+# Vim-like pane navigation (cmd+shift = thumb+pinky)
+keybind = cmd+shift+h=goto_split:left
+keybind = cmd+shift+j=goto_split:down
+keybind = cmd+shift+k=goto_split:up
+keybind = cmd+shift+l=goto_split:right
+
+# Vim-like pane resize (ctrl+shift = thumb+pinky)
+keybind = ctrl+shift+h=resize_split:left,10
+keybind = ctrl+shift+j=resize_split:down,10
+keybind = ctrl+shift+k=resize_split:up,10
+keybind = ctrl+shift+l=resize_split:right,10
+
+# Splits
+keybind = cmd+shift+s=new_split:down
+keybind = cmd+shift+v=new_split:right
+
+# ===== omarchy-style theme system (managed) =====
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+window-padding-x = 8
+window-padding-y = 8
+macos-titlebar-style = hidden
+keybind = cmd+shift+comma=reload_config
+
+# Theme fragment. The leading `?` makes it optional, so Ghostty still starts
+# if ~/.config/theme/current is missing.
+config-file = ?~/.config/theme/current/ghostty
+# ===== end theme system =====

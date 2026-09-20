@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+#
+# Seeds the theme system after chezmoi writes the theme files.
+#
+# Two things cannot live in the repo and so are produced here:
+#   1. ~/.config/theme/current -- a symlink that `theme-set` repoints on every
+#      switch. It is runtime state, so .chezmoiignore excludes it; this script
+#      creates it once if missing, defaulting to retro-82.
+#   2. themes/*/wallpaper.jpg -- 5120x2880 images generated deterministically
+#      from each theme's palette. Generating beats committing ~3 MB of binaries.
+#
+# run_onchange: re-runs whenever any theme palette below changes.
+#
+# Palette hashes (do not edit; chezmoi uses these to detect changes):
+{{ range (glob (joinPath .chezmoi.sourceDir "dot_config/theme/themes/*/colors.sh")) -}}
+#   {{ base (dir .) }}: {{ include . | sha256sum }}
+{{ end }}
+set -e
+
+THEME_ROOT="$HOME/.config/theme"
+DEFAULT_THEME="retro-82"
+
+# 1. seed the `current` symlink if it is missing or dangling
+if [ ! -e "$THEME_ROOT/current" ]; then
+  if [ -d "$THEME_ROOT/themes/$DEFAULT_THEME" ]; then
+    ln -sfn "$THEME_ROOT/themes/$DEFAULT_THEME" "$THEME_ROOT/current"
+    echo "theme: seeded current -> $DEFAULT_THEME"
+  fi
+fi
+
+# 2. generate the fallback gradient wallpapers (theme-wallpaper is a no-op if present)
+for d in "$THEME_ROOT"/themes/*/; do
+  [ -f "$d/colors.sh" ] || continue
+  "$THEME_ROOT/bin/theme-wallpaper" "$d" || echo "theme: wallpaper generation failed for $d" >&2
+done
+
+# 3. fetch the real wallpapers from upstream Omarchy (skips what exists)
+[ -x "$THEME_ROOT/bin/theme-bg-fetch" ] && "$THEME_ROOT/bin/theme-bg-fetch" || true
+
+# 4. keep the Raycast dropdown in sync with the theme list
+[ -x "$THEME_ROOT/bin/theme-raycast-sync" ] && "$THEME_ROOT/bin/theme-raycast-sync" >/dev/null || true
+
+echo "theme: setup complete"
+{{- end -}}
