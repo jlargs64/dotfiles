@@ -12,7 +12,12 @@
 set -euo pipefail
 
 THEMES="$HOME/.config/theme/themes"
-RAW="https://raw.githubusercontent.com/basecamp/omarchy/master/themes"
+
+# Pinned to a commit, not a branch. These bytes go straight into ImageMagick,
+# so a moving ref would let any upstream commit choose what gets decoded here.
+# Bump deliberately: git ls-remote https://github.com/basecamp/omarchy HEAD
+OMARCHY_REV="45748a2812f42e32f915b053caf4074e150e2048"
+RAW="https://raw.githubusercontent.com/basecamp/omarchy/$OMARCHY_REV/themes"
 
 command -v magick >/dev/null 2>&1 || { echo "theme-bg-fetch: needs imagemagick" >&2; exit 1; }
 
@@ -33,13 +38,18 @@ catppuccin-mocha|02|catppuccin/1-totoro.webp|totoro
 catppuccin-mocha|03|catppuccin/3-blue-eye.webp|blue-eye
 "
 
+# One private scratch dir for every download; mktemp owns the name, we own
+# the files inside it, and the trap removes all of it on any exit.
+tmpdir="$(mktemp -d -t theme-bg)"
+trap 'rm -rf "$tmpdir"' EXIT
+
 echo "$MAP" | while IFS='|' read -r theme n src label; do
   [ -z "$theme" ] && continue
   [ -d "$THEMES/$theme" ] || continue
   mkdir -p "$THEMES/$theme/backgrounds"
   out="$THEMES/$theme/backgrounds/$n-$label.jpg"
   [ -f "$out" ] && continue
-  tmp="$(mktemp -t bg).${src##*.}"
+  tmp="$tmpdir/$theme-$n.${src##*.}"
   # $src is "<upstream theme>/<file>"; the real path has /backgrounds/ between them
   url="$RAW/${src%%/*}/backgrounds/${src#*/}"
   if curl -fsSL --max-time 120 -o "$tmp" "$url"; then
