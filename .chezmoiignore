@@ -35,6 +35,12 @@ docs
 # than committed as an opaque binary -- see docs/theme-system.md.
 .config/sketchybar/helpers/open_centered
 
+# Real credentials, sourced from .zshrc line 29. This repo is PUBLIC, so this
+# file must never enter it. Listed here so an accidental `chezmoi add -r ~`
+# cannot pull it in; the tokens that used to sit inline in .zshrc now live
+# here instead.
+.secrets
+
 # macOS-only window-manager and bar tooling.
 {{- if ne .chezmoi.os "darwin" }}
 .config/sketchybar

@@ -11,7 +11,6 @@ typeset -U fpath
 typeset -U manpath
 typeset -U cdpath
 
-
 # Set zinit directory
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
@@ -24,6 +23,7 @@ fi
 # Justin's config
 export GITHUB_USERNAME="jlargs64"
 export EDITOR="nvim"
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 # Source secrets file (Apple API keys, etc.)
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
@@ -107,17 +107,54 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-
 # Aliases
 alias ls="eza --icons=always"
 alias cd="z"
-
 # Development tools
 alias k8="kubectl"
 alias lzd='lazydocker'
 alias lg='lazygit'
 alias vim='nvim'
 
-# Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+# Ollama
+OLLAMA_FLASH_ATTENTION=1
+OLLAMA_KV_CACHE_TYPE=q8_0
+OLLAMA_CONTEXT_LENGTH=32000
+
+PANERU_CONFIG=$HOME/.paneru.toml
+
+# Added by Cap
+export PATH="/Users/justinlargo/.cap/bin:$PATH"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/justinlargo/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+# Added by Antigravity CLI installer
+export PATH="/Users/justinlargo/.local/bin:$PATH"
+
+# Added by Antigravity IDE
+export PATH="/Users/justinlargo/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/justinlargo/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/justinlargo/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/justinlargo/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/justinlargo/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Standard VT Forward Delete
+bindkey '^[[3~' delete-char
+
+# If you use Zsh vi mode, explicitly bind it in both modes:
+bindkey -M vicmd '^[[3~' delete-char
+bindkey -M viins '^[[3~' delete-char
+
+# Some multiplexer pass-through variants:
+bindkey '^[3~' delete-char
+bindkey '^[[3;5~' delete-char
+export LITELLM_BASE_URL="https://litellm.gazella-gar.ts.net"
+export LITELLM_API_KEY="$LITELLM_MASTER_KEY"
+
+# Ternary-Bonsai-2-27B local MLX model
+alias bonsai="$HOME/Tools/bonsai2/bonsai"
