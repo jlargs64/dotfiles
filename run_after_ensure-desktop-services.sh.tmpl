@@ -1,0 +1,54 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# ---------------------------------------------------------------------------
+# Make sure the desktop stack is registered as launchd services, so it comes
+# back after a reboot.
+#
+# This runs on every `chezmoi apply` and is idempotent: a service that is
+# already `started` is left alone.
+#
+# Why this script exists: `sketchybar` and `borders` were once started by hand
+# (`sketchybar &`), which works until the machine is shut down. A hand-started
+# process has no LaunchAgent, so it never comes back at login. `brew services
+# start` writes ~/Library/LaunchAgents/sh.brew.<name>.plist with RunAtLoad and
+# KeepAlive set, which is what actually survives a reboot.
+#
+# yabai and skhd are deliberately NOT started here -- macOS refuses to run them
+# until Accessibility permission is granted by hand, and starting them before
+# that just fills their logs. See docs/window-management.md.
+# ---------------------------------------------------------------------------
+
+set -u
+
+command -v brew >/dev/null 2>&1 || exit 0
+
+# Status of a brew service: started / stopped / none / error, or empty if the
+# formula is not installed.
+service_status() {
+  brew services list 2>/dev/null | awk -v n="$1" '$1 == n { print $2; exit }'
+}
+
+for svc in sketchybar borders; do
+  status="$(service_status "$svc")"
+  case "$status" in
+    started)
+      ;;
+    "")
+      echo "  $svc: not installed, skipping"
+      ;;
+    *)
+      echo "  $svc: $status -> registering as a login service"
+      brew services start "$svc" >/dev/null || echo "    failed; see: brew services list"
+      ;;
+  esac
+done
+
+# yabai and skhd use their own service subcommand, not brew services. Only
+# report on them -- do not start them.
+for svc in yabai skhd; do
+  command -v "$svc" >/dev/null 2>&1 || continue
+  if ! pgrep -x "$svc" >/dev/null 2>&1; then
+    echo "  $svc: not running -- grant Accessibility, then: $svc --start-service"
+  fi
+done
+{{- end -}}

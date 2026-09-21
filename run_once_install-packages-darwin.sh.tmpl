@@ -91,11 +91,14 @@ MANUAL STEP REQUIRED -- yabai and skhd cannot start without it:
        /opt/homebrew/bin/yabai
        /opt/homebrew/bin/skhd
 
-  2. Then start the services:
+  2. Then start them:
        yabai --start-service
        skhd --start-service
-       brew services start borders
-       brew services start sketchybar
+
+sketchybar and borders need no permission and are registered automatically by
+run_after_ensure-desktop-services.sh on every `chezmoi apply`. Use
+`brew services list` to confirm they read `started` rather than `none` -- `none`
+means no LaunchAgent, so they will not come back after a reboot.
 
 The yabai scripting addition is deliberately NOT used -- it requires partially
 disabling SIP. Tiling works without it; switching Spaces stays native

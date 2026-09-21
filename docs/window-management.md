@@ -46,14 +46,44 @@ Accessibility permission by hand.**
 2. Add and enable both:
    - `/opt/homebrew/bin/yabai`
    - `/opt/homebrew/bin/skhd`
-3. Start everything:
+3. Start the two that need the permission:
 
    ```sh
    yabai --start-service
    skhd --start-service
-   brew services start borders
-   brew services start sketchybar
    ```
+
+`sketchybar` and `borders` need no permission, so `chezmoi apply` registers
+them for you -- see `run_after_ensure-desktop-services.sh.tmpl`. To do it by
+hand:
+
+```sh
+brew services start borders
+brew services start sketchybar
+```
+
+## Services must be registered, not just running
+
+Starting a bar with `sketchybar &` works until the machine is shut down. A
+hand-started process has no LaunchAgent, so it does not come back at login --
+the symptom is "everything works, then SketchyBar is missing after a reboot,"
+while yabai and skhd (which do have agents) come back fine.
+
+`brew services start <name>` is what fixes it: it writes
+`~/Library/LaunchAgents/sh.brew.<name>.plist` with `RunAtLoad` and `KeepAlive`
+set, so the service starts at login and restarts if it crashes.
+
+Check what is actually registered:
+
+```sh
+brew services list          # sketchybar/borders: want `started`, not `none`
+launchctl list | grep -E 'yabai|skhd'
+ls ~/Library/LaunchAgents/
+```
+
+`none` means no agent exists, so that service will not survive a reboot.
+`chezmoi apply` re-registers sketchybar and borders whenever it finds them that
+way.
 
 If a service refuses to start, the reason is in its log:
 
