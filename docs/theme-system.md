@@ -222,8 +222,9 @@ the two.
 
 **SketchyBar** — `sketchybarrc` sources the theme palette on its first line, and
 `~/.config/sketchybar/colors.sh` derives every variable the bar and its plugins
-already used (`PILL_BG`, `ACCENT_WORKSPACE`, `GREY`, …) from `BG`/`FG`/`ACCENT`/
-`MUTED`. Plugins were not rewritten; they keep reading the same variable names.
+use (`BAR_BG`, `WHITE`, `FG_DIM`, `FG_FAINT`, …) from `BG`/`FG`. The bar is
+monochrome like Omarchy's waybar, so only `BG`, `FG` and `RED` (near-empty
+battery) are actually read; `ACCENT` and the rest go to borders and the apps.
 
 **borders** — `bordersrc` sources the palette and sets `active_color` from
 `ACCENT`, `inactive_color` from `MUTED`.
@@ -284,7 +285,7 @@ readlink ~/.config/theme/current            # which theme is active
 ghostty +show-config | grep -E 'foreground|background'
 ghostty +show-config 2>&1 >/dev/null        # theme-name errors show here
 nvim --headless -c 'lua print(vim.g.colors_name) vim.cmd("qa!")'
-sketchybar --query bar | jq .color          # expect 0xcc<BG>
+sketchybar --query bar | jq .color          # expect 0xff<BG>
 theme-list                                  # what is installed
 ```
 

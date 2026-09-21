@@ -37,7 +37,7 @@ if [ -n "$STATE" ]; then
   sketchybar --set "$NAME" \
     drawing=on \
     icon="$ICON" \
-    icon.color="$ACCENT_MEDIA" \
+    icon.color="$WHITE" \
     label="$TITLE" \
     label.color="$WHITE"
 else

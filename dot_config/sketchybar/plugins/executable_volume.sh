@@ -4,6 +4,7 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
 
 CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
 source "$CONFIG_DIR/colors.sh" 2>/dev/null
+source "$CONFIG_DIR/plugins/hover.sh"
 
 if [ "$SENDER" = "volume_change" ]; then
   VOLUME="$INFO"
@@ -13,11 +14,11 @@ fi
 
 IS_MUTED=$(osascript -e "output muted of (get volume settings)" 2>/dev/null)
 
-if [ "$IS_MUTED" = "true" ] || [ "$VOLUME" -eq 0 ]; then
+COLOR="$WHITE"
+if [ "$IS_MUTED" = "true" ] || [ "${VOLUME:-0}" -eq 0 ]; then
   ICON="󰝟"
-  COLOR="$RED"
+  COLOR="$FG_DIM"
 else
-  COLOR="$ACCENT_VOLUME"
   case "$VOLUME" in
     [6-9][0-9]|100) ICON="" ;;
     [3-5][0-9]) ICON="" ;;

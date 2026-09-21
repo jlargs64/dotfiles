@@ -4,6 +4,7 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
 
 CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
 source "$CONFIG_DIR/colors.sh" 2>/dev/null
+source "$CONFIG_DIR/plugins/hover.sh"
 
 IP="$(ipconfig getifaddr en0 2>/dev/null)"
 SSID="$(ipconfig getsummary en0 2>/dev/null | awk -F': ' '/  SSID : / {print $2}')"
@@ -21,17 +22,15 @@ if [ -n "$IP" ]; then
   if [ ${#LABEL} -gt 12 ]; then
     LABEL="${LABEL:0:10}…"
   fi
-  ICON=""
   sketchybar --set "$NAME" \
-    icon="$ICON" \
-    icon.color="$ACCENT_WIFI" \
+    icon="" \
+    icon.color="$WHITE" \
     label="$LABEL" \
     label.color="$WHITE"
 else
-  ICON=""
   sketchybar --set "$NAME" \
-    icon="$ICON" \
-    icon.color="$RED" \
+    icon="" \
+    icon.color="$FG_DIM" \
     label="Offline" \
-    label.color="$GREY"
+    label.color="$FG_DIM"
 fi

@@ -149,8 +149,9 @@ Mission Control.
 `~/.config/yabai/yabairc`, in full:
 
 - **bsp** layout, new windows open as `second_child`, no auto-balance
-- 8px gaps and padding, **48px at the top** to clear the bar
-  (SketchyBar is 38px tall with a 4px y_offset)
+- 8px gaps and padding on every side, including the top. yabai already
+  excludes the 32px menu-bar/notch strip, and the 32px SketchyBar sits
+  entirely inside it, so no extra top padding is needed to clear the bar
 - focus does not follow the mouse, in either direction
 - `window_border off` — JankyBorders draws the border instead
 - never tiled: System Settings, System Information, Activity Monitor,
@@ -166,8 +167,9 @@ chezmoi add ~/.config/yabai/yabairc
 
 ## Space indicators in the bar
 
-The bar shows Spaces 1–5 with the app icons of the windows on each. The focused
-Space is drawn in the theme's `ACCENT`, the rest in `MUTED`.
+The bar shows Spaces 1–5 as plain numbers, Omarchy-style. Brightness carries
+the state: the focused Space is full foreground and bold, Spaces with windows
+are dim, empty Spaces are faint.
 
 Two event sources keep it current:
 
@@ -177,11 +179,21 @@ Two event sources keep it current:
 
 `plugins/space.sh` asks yabai which Space has focus, and falls back to
 SketchyBar's `$SELECTED` when yabai is not running. So the bar stays correct even
-with yabai stopped or lacking permission — it just loses the app icons.
+with yabai stopped or lacking permission — it just cannot tell occupied Spaces
+from empty ones, so every unfocused Space renders as occupied.
 
 Clicking a Space runs `plugins/space_click.sh`, which tries
 `yabai -m space --focus` (fails without the scripting addition) and falls back to
 synthesizing the native `ctrl + <number>` keystroke.
+
+## Caffeine toggle in the bar
+
+The coffee-cup icon on the right toggles `caffeinate -dims`: display, system
+and disk stay awake and idle sleep is blocked until it is clicked again. Bright
+cup = awake, dim crossed-out cup = normal sleep. The icon reflects any
+`caffeinate` you are running, including one typed into a terminal. Clicking
+"off" kills the one the bar started (PID in `~/.cache/sketchybar/caffeinate.pid`,
+so it survives `sketchybar --reload`), or failing that all of yours.
 
 ## Desktop feel
 

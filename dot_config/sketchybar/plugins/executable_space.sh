@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
-# Renders one native macOS Space indicator, with the app icons of the windows
-# yabai reports on that space.
+# Renders one native macOS Space indicator: its number, at one of three
+# brightnesses.
+#
+#   focused    full foreground, bold
+#   occupied   dim   (has at least one non-minimized window, per yabai)
+#   empty      faint
 #
 # Focus detection order:
 #   1. yabai's own view of which space has focus (authoritative when running)
 #   2. $SELECTED, which SketchyBar sets on its native `space_change` event
 # so the bar still highlights correctly if yabai is stopped or lacks
-# Accessibility permission.
+# Accessibility permission. Without yabai every unfocused Space renders as
+# occupied, since there is no way to ask what is on it.
 
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
 
 CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
 source "$CONFIG_DIR/colors.sh" 2>/dev/null
-source "$CONFIG_DIR/icon_map.sh"
 
 SID="$1"
 
@@ -30,54 +34,26 @@ else
   [ "${SELECTED:-false}" = "true" ] && IS_FOCUSED=1 || IS_FOCUSED=0
 fi
 
-# ----- app icons on this space ---------------------------------------------
-APPS=()
+# ----- does this space have windows? ---------------------------------------
+WINDOWS=""
 if command -v yabai >/dev/null 2>&1; then
-  while IFS= read -r app; do
-    [ -n "$app" ] && APPS+=("$app")
-  done < <(yabai -m query --windows --space "$SID" 2>/dev/null \
-    | jq -r '.[] | select(."is-minimized" == false) | .app' 2>/dev/null | sort -u)
+  WINDOWS="$(yabai -m query --windows --space "$SID" 2>/dev/null \
+    | jq -r 'map(select(."is-minimized" == false)) | length' 2>/dev/null)"
 fi
-
-ICONS=""
-for app in "${APPS[@]:-}"; do
-  [ -z "$app" ] && continue
-  __icon_map "$app"
-  ICONS="$ICONS $icon_result"
-done
-ICONS="$(echo "$ICONS" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
 # ----- render ---------------------------------------------------------------
 if [ "$IS_FOCUSED" -eq 1 ]; then
-  args=(
-    background.drawing=on
-    background.color="$PILL_ACTIVE_BG"
-    background.border_color="$PILL_ACTIVE_BORDER"
-    background.border_width=1
-    icon="$SID"
-    icon.color="$ACCENT_WORKSPACE"
-  )
-  LABEL_COLOR="$ACCENT_WORKSPACE"
+  COLOR="$FG_FULL"
+  FONT="Hack Nerd Font:Bold:13.0"
+elif [ "${WINDOWS:-1}" -gt 0 ]; then
+  COLOR="$FG_DIM"
+  FONT="Hack Nerd Font:Regular:13.0"
 else
-  args=(
-    background.drawing=off
-    background.border_width=0
-    icon="$SID"
-    icon.color="$GREY"
-  )
-  LABEL_COLOR="$GREY"
+  COLOR="$FG_FAINT"
+  FONT="Hack Nerd Font:Regular:13.0"
 fi
 
-if [ -n "$ICONS" ]; then
-  sketchybar --set "$NAME" "${args[@]}" \
-    icon.padding_right=2 \
-    label="$ICONS" \
-    label.drawing=on \
-    label.font="sketchybar-app-font:Regular:14.0" \
-    label.color="$LABEL_COLOR"
-else
-  sketchybar --set "$NAME" "${args[@]}" \
-    icon.padding_right=6 \
-    label="" \
-    label.drawing=off
-fi
+sketchybar --set "$NAME" \
+  icon="$SID" \
+  icon.color="$COLOR" \
+  icon.font="$FONT"

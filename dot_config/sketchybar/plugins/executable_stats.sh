@@ -18,6 +18,7 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
 
 CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
 source "$CONFIG_DIR/colors.sh" 2>/dev/null
+source "$CONFIG_DIR/plugins/hover.sh"
 
 # ----- CPU: two samples, one second apart, usage = 100 - idle ---------------
 CPU=$(top -l 2 -n 0 -s 1 2>/dev/null \
@@ -43,6 +44,6 @@ MEM_ICON=""
 
 sketchybar --set "$NAME" \
   icon="$CPU_ICON" \
-  icon.color="$ACCENT_STATS" \
+  icon.color="$WHITE" \
   label="${CPU}% $MEM_ICON ${MEM}" \
   label.color="$WHITE"
