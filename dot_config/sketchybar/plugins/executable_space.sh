@@ -7,8 +7,10 @@
 #   empty      faint
 #
 # Focus detection order:
-#   1. yabai's own view of which space has focus (authoritative when running)
-#   2. $SELECTED, which SketchyBar sets on its native `space_change` event
+#   1. on `space_change`: $SELECTED, which SketchyBar sets from the macOS
+#      notification itself (fastest; yabai lags it on swipes)
+#   2. otherwise: yabai's own view of which space has focus
+#   3. yabai missing: $SELECTED again
 # so the bar still highlights correctly if yabai is stopped or lacks
 # Accessibility permission. Without yabai every unfocused Space renders as
 # occupied, since there is no way to ask what is on it.
@@ -21,8 +23,16 @@ source "$CONFIG_DIR/colors.sh" 2>/dev/null
 SID="$1"
 
 # ----- which space has focus? ----------------------------------------------
+# On SketchyBar's native `space_change` event trust $SELECTED: it arrives with
+# the macOS notification, while yabai's own view of the focused space can lag
+# it by a few hundred ms. Asking yabai here made the bar render the OLD space
+# first and only correct itself when yabai's `space_changed` signal fired,
+# which showed up as a ~500ms delay on every swipe. Every other event (and the
+# initial draw) still asks yabai, which is authoritative once settled.
 FOCUSED=""
-if command -v yabai >/dev/null 2>&1; then
+if [ "${SENDER:-}" = "space_change" ] && [ -n "${SELECTED:-}" ]; then
+  [ "$SELECTED" = "true" ] && FOCUSED="$SID" || FOCUSED="not-$SID"
+elif command -v yabai >/dev/null 2>&1; then
   FOCUSED="$(yabai -m query --spaces 2>/dev/null \
     | jq -r 'map(select(."has-focus" == true)) | .[0].index // empty' 2>/dev/null)"
 fi
