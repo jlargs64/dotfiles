@@ -27,7 +27,7 @@ return {
     "folke/snacks.nvim",
     opts = {
       explorer = { replace_netrw = false }, -- oil owns `-`/netrw
-      image = { enabled = true, doc = { enabled = true, inline = true, float = true } },
+      image = { enabled = true, doc = { enabled = true, inline = true, float = true, max_width = 200, max_height = 100 } },
     },
   },
 

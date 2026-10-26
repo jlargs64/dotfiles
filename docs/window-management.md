@@ -118,16 +118,30 @@ and re-add it.
 
 | Binding | Action |
 |---|---|
-| `alt - e` | balance the tree |
+| `alt - =` | balance the tree |
 | `alt - s` | toggle the space between **bsp** (tiled) and **stack** |
 | `alt - [` / `alt - ]` | focus previous / next window in the stack |
 | `shift + alt - s` | next new window **stacks** onto this one |
 | `shift + alt - e` / `shift + alt - d` | next new window splits **right** / **below** |
 | `alt - r` | rotate layout 90° |
-| `alt - t` | toggle float, centered on a 4×4 grid |
+| `alt - g` | toggle float, centered on a 4×4 grid |
 | `alt - f` | zoom to fullscreen (within the tile tree) |
 | `shift + alt - f` | native macOS fullscreen |
-| `alt - m` | toggle split direction |
+| `alt - v` | toggle split direction |
+
+### App launchers
+
+skhd is the single source of truth for hotkeys. Raycast's per-app hotkeys were
+removed so nothing double-fires.
+
+| Keys | App |
+|---|---|
+| `alt - a` | Claude |
+| `alt - t` | Ghostty |
+| `alt - b` | Helium |
+| `alt - m` | Messages |
+| `alt - o` | Obsidian |
+| `alt - e` | Zed |
 
 ### Mouse
 

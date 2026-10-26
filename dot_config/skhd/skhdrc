@@ -29,12 +29,12 @@ ctrl + alt - j : yabai -m window --resize bottom:0:40 || yabai -m window --resiz
 ctrl + alt - k : yabai -m window --resize top:0:-40   || yabai -m window --resize bottom:0:-40
 
 # ----- layout ---------------------------------------------------------------
-alt - e          : yabai -m space --balance
+alt - 0x18       : yabai -m space --balance                            # alt - =
 alt - r          : yabai -m space --rotate 90
-alt - t          : yabai -m window --toggle float --grid 4:4:1:1:2:2
+alt - g          : yabai -m window --toggle float --grid 4:4:1:1:2:2   # g: grid
 alt - f          : yabai -m window --toggle zoom-fullscreen
 shift + alt - f  : yabai -m window --toggle native-fullscreen
-alt - m          : yabai -m window --toggle split
+alt - v          : yabai -m window --toggle split                     # v: flip axis
 
 # ----- stacking ---------------------------------------------------------------
 # A "stack" puts several windows in one tile, like browser tabs -- only the
@@ -47,6 +47,21 @@ alt - 0x1E       : yabai -m window --focus stack.next    # alt - ]
 shift + alt - s  : yabai -m window --insert stack        # stack onto this window
 shift + alt - e  : yabai -m window --insert east         # split to the right
 shift + alt - d  : yabai -m window --insert south        # split below
+
+# ----- app launchers --------------------------------------------------------
+# skhd is the single source of truth for hotkeys; Raycast's per-app hotkeys
+# were removed in favour of these. `open -a` launches or brings to front.
+alt - a          : open -a "Claude"
+alt - t          : open -a "Ghostty"
+alt - b          : open -a "Helium"
+alt - m          : open -a "Messages"
+alt - o          : open -a "Obsidian"
+alt - e          : open -a "Zed"
+
+# ----- workspace agent ------------------------------------------------------
+# Press once to start listening, again to transcribe (Handy) and run. See
+# ~/Projects/macarchy/docs/agent.md. Dry-run unless MACARCHY_AGENT_EXECUTE=true.
+alt - space      : ~/.local/bin/ws --voice
 
 # ----- theme ----------------------------------------------------------------
 # Cycle Ghostty + Zellij + Neovim + SketchyBar + borders + wallpaper together.

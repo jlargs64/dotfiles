@@ -158,3 +158,45 @@ export LITELLM_API_KEY="$LITELLM_MASTER_KEY"
 
 # Ternary-Bonsai-2-27B local MLX model
 alias bonsai="$HOME/Tools/bonsai2/bonsai"
+
+# AI tab names for Zellij (Ternary-Bonsai-2-27B via `bonsai serve`).
+# mermaid-cli (mmdc) keeps its headless Chrome here; ~/.cache gets swept by cleaners.
+export PUPPETEER_CACHE_DIR="$HOME/.local/share/puppeteer"
+
+# Zellij exports ZELLIJ* into every child. If this shell was not started by
+# zellij (parent is login/ghostty/launchd), the vars are a leak: drop them so
+# nvim/snacks.image do not think they are inside a multiplexer.
+if [[ -n $ZELLIJ && "$(ps -o comm= -p $PPID 2>/dev/null)" != *zellij* ]]; then
+  unset ZELLIJ ZELLIJ_PANE_ID ZELLIJ_SESSION_NAME
+fi
+
+# Renames the focused tab and this pane after each cwd/command change. ZJ_NAME_OFF=1 disables.
+ZJ_NAME_URL=${ZJ_NAME_URL:-http://127.0.0.1:8080/v1/chat/completions}
+ZJ_NAME_MODEL=${ZJ_NAME_MODEL:-ternary-bonsai-2-27b}
+_zj_name_last=""; _zj_name_cmd=""
+_zj_preexec() { _zj_name_cmd="$1" }
+_zj_precmd() {
+  [[ ( -n $ZELLIJ || -n $GHOSTTY_RESOURCES_DIR ) && -z $ZJ_NAME_OFF ]] || return
+  local key="$PWD|${_zj_name_cmd%% *}"
+  [[ $key == "$_zj_name_last" ]] && return
+  _zj_name_last=$key
+  ( _zj_name_ask "$PWD" "$_zj_name_cmd" ) &!
+}
+_zj_name_ask() {
+  local name
+  name=$(curl -s -m 10 "$ZJ_NAME_URL" -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg m "$ZJ_NAME_MODEL" --arg cwd "${1/#$HOME/~}" --arg cmd "$2" \
+      '{model:$m,max_tokens:16,temperature:0,enable_thinking:false,messages:[
+        {role:"system",content:"Name a terminal tab in 1-3 lowercase words. Reply with the name only, no punctuation."},
+        {role:"user",content:"cwd: \($cwd)\nlast command: \($cmd)"}]}')" \
+    | jq -r '.choices[0].message.content // empty' | sed -e 's/<think>.*<\/think>//' -e 's/^[[:space:]]*//;s/[[:space:]]*$//' | head -1 | tr -d '"`*' | cut -c1-24)
+  [[ -n $name ]] || return
+  [[ -n $ZELLIJ ]] && zellij action rename-tab "$name"
+  # Pane title goes through the OSC title escape on this shell's own tty, so it
+  # always lands on the right pane (rename-pane would hit whichever pane is
+  # focused). A pane you named by hand keeps its name; Zellij prefers that.
+  printf '\e]0;%s\a' "$name" > /dev/tty
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec _zj_preexec
+add-zsh-hook precmd _zj_precmd
