@@ -1,0 +1,6 @@
+# Global markdownlint config, loaded by nvim-lint (see lua/plugins/lint.lua)
+config:
+  default: true
+  MD013: false # line-length: prettier handles wrapping
+  MD036: false # emphasis-as-heading: "_Last updated_" style lines are fine
+  MD033: false # inline HTML: common in Hugo posts
