@@ -1,0 +1,13 @@
+# Personal skhd bindings. macarchy's skhdrc pulls this in with
+# `.load "local.skhdrc"`; everything else in ~/.config/skhd comes from macarchy.
+# Reload after editing:  skhd --restart-service
+# Taken by macarchy: alt - b (background picker), alt - w (ws voice),
+# alt - space (Handy). Run `hotkey-check` to catch collisions.
+
+# ----- app launchers --------------------------------------------------------
+# `open -a` launches or brings to front.
+alt - a : open -a "Claude"   # open Claude
+alt - t : open -a "Ghostty"   # open Ghostty
+alt - m : open -a "Messages"   # open Messages
+alt - o : open -a "Obsidian"   # open Obsidian
+alt - e : open -a "Zed"   # open Zed

@@ -11,29 +11,32 @@ README.md
 LICENSE
 docs
 
-# Runtime state, not configuration. `theme-set` repoints this symlink on every
-# switch, so chezmoi must never try to own it or it will fight the switcher.
-.config/theme/current
+# macarchy (github.com/jlargs64/macarchy) owns the desktop layer: theme system,
+# yabai, skhd, SketchyBar, borders, raycast theme scripts and their ~/.local/bin
+# links. It installs them as symlinks into its own checkout, so chezmoi must
+# never write these paths or `chezmoi apply` would replace the symlinks with
+# stale copies. Personal skhd bindings stay here in .config/skhd/local.skhdrc.
+.config/theme
+.config/theme/**
+.config/sketchybar
+.config/sketchybar/**
+.config/borders
+.config/borders/**
+.config/yabai
+.config/yabai/**
+.config/raycast/scripts
+.config/raycast/scripts/**
+.config/macarchy
+.config/macarchy/**
+.config/skhd/skhdrc
+.local/bin/theme-*
+.local/bin/macarchy-*
+.local/bin/hotkey-check
+.local/bin/ws
 
-# Generated from each theme's palette by run_onchange_generate-wallpapers.sh.
-# Deterministic, ~3 MB total, so they are built on apply instead of committed.
-.config/theme/themes/*/wallpaper.jpg
-.config/theme/wallpaper-current.jpg
-
-# Real wallpapers, fetched from upstream Omarchy by theme-bg-fetch (~19 MB).
-# Downloaded on apply rather than committed, same reasoning as the gradients.
-.config/theme/themes/*/backgrounds
-
-# Per-theme remembered background choice. Runtime state.
-.config/theme/themes/*/.bg
-
-# Backups left behind by the theme installer and by zellij's own config rewrites.
+# Backups left behind by installers and by zellij's own config rewrites.
 **/*.bak
 **/*.bak.[0-9]
-
-# Compiled arm64 Mach-O helper with no source in this repo. Excluded rather
-# than committed as an opaque binary -- see docs/theme-system.md.
-.config/sketchybar/helpers/open_centered
 
 # Real credentials, sourced from .zshrc line 29. This repo is PUBLIC, so this
 # file must never enter it. Listed here so an accidental `chezmoi add -r ~`
